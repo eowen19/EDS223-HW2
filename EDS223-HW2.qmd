@@ -6,12 +6,12 @@ library(sf)
 library(tmap)
 library(tidyverse)
 library(stars)
+library(here)
 ```
 
 ```{r}
-ej_screen <- read_sf(here("data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
+ej_screen <- st_read(here("data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
 
-inequality <- read_sf(here("data", "mapping-inequality", "mapping-inequality-los-angeles"))
-
+inequality <- st_read(here("data", "mapping-inequality", "mapping-inequality-los-angeles.json"))
 
 ```
