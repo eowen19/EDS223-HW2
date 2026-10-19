@@ -1,0 +1,24 @@
+
+
+# Load libaries sf, tmap, tidyverse, spData
+```{r}
+library(sf)
+library(tmap)
+library(tidyverse)
+library(stars)
+library(here)
+```
+
+```{r}
+ej_screen <- st_read(here("EDS223-HW2", "data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
+
+inequality <- st_read(here("EDS223-HW2","data", "mapping-inequality", "mapping-inequality-los-angeles.json"))
+```
+
+```{r}
+california <- ej_screen %>%
+  dplyr::filter(ST_ABBREV == "CA")
+
+los_angeles<- california %>%
+  dplyr::filter(CNTY_NAME %in% c("Los Angeles County"))
+```
