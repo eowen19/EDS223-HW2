@@ -15,10 +15,33 @@ ej_screen <- st_read(here("EDS223-HW2", "data", "ejscreen", "EJSCREEN_2023_BG_St
 inequality <- st_read(here("EDS223-HW2","data", "mapping-inequality", "mapping-inequality-los-angeles.json"))
 ```
 
+# Filter to Los Angeles County
 ```{r}
 california <- ej_screen %>%
   dplyr::filter(ST_ABBREV == "CA")
 
 los_angeles<- california %>%
   dplyr::filter(CNTY_NAME %in% c("Los Angeles County"))
+```
+
+```{r}
+st_crs(los_angeles)
+st_crs(inequality)
+st_crs(los_angeles) == st_crs(inequality)
+la_inequality_transform <- st_transform(los_angeles, crs = st_crs(inequality))
+if(st_crs(la_inequality_transform) == st_crs(inequality)){
+  print("it's a match!")
+} else {
+  print("still not a match")
+}
+```
+
+
+```{r}
+tm_shape(los_angeles)+
+    tm_borders()+
+    tm_fill("")+
+    tm_title("Los Angeles County")+
+tm_compass(position = c('right', 'top'))+
+tm_scalebar()
 ```
