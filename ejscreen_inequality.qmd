@@ -7,12 +7,16 @@ library(tmap)
 library(tidyverse)
 library(stars)
 library(here)
+library(gt)
+library(dplyr)
 ```
 
 ```{r}
 ej_screen <- st_read(here("EDS223-HW2", "data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
 
 inequality <- st_read(here("EDS223-HW2","data", "mapping-inequality", "mapping-inequality-los-angeles.json"))
+
+crashes <- read_csv('EDS223-HW2/data/SWITRS_LA/Crashes.csv')
 ```
 
 # Filter to Los Angeles County
@@ -40,23 +44,53 @@ if(st_crs(la_transform) == st_crs(inequality)){
 la_transform <- st_make_valid(la_transform)
 inequality <- st_make_valid(inequality)
 la_inequality <- st_join(la_transform, inequality, left = FALSE)
+la_inequality <- st_drop_geometry(la_inequality)
 ```
 
 ### Base map of Los Angeles county
 ```{r}
-tm_shape(la_inequality)+
-    tm_borders()
-    tm_title("Los Angeles County")+
-tm_compass(position = c('right', 'top'))+
-tm_scalebar()
+tm_basemap('OpenStreetMap.HOT', alpha = 0.7)+
+  tm_shape(los_angeles)+
+  tm_title("Los Angeles County")
+```
+
+```{r}
+grade_colors_transparent <- c("A" = "#0855016f", "B" = "#00588b5e", "C" = "#bfb90360", "D" ="#c40017c2")
+
+grade_colors<- c("A" = "#76A865", "B" = "#7CB5BD", "C" = "#FFFF00", "D" ="#e30c25")
 ```
 
 ### Map of historical redlining
 ```{r}
-tm_shape(la_inequality)+
-    tm_borders()+
-    tm_fill('grade')+
-    tm_title("Los Angeles County")+
+tm_basemap('OpenStreetMap.HOT', alpha = 0.7)+
+    tm_shape(inequality, alpha = 0.7)+
+    tm_polygons(fill = 'grade', 
+    fill.scale = tm_scale(values = grade_colors))+
+    tm_title("Los Angeles County by Historical Redlining Neighbours")+
 tm_compass(position = c('right', 'top'))+
 tm_scalebar()
+```
+
+ejscreen_redlining_percent <- la_ejs_join |>
+  mutate(
+    grade = ifelse(is.na(grade), "No Grade", grade)) |>
+  count(grade) |>
+  mutate(percent = (n / sum(n)) * 100)
+
+# Render the table
+kable(ejscreen_redlining_percent, digits = 2)
+
+```{r}
+la_inequality_percent <- la_inequality |> 
+  mutate(
+    grade = ifelse(is.na(grade), 'No Grade', grade)) |> 
+      count(grade) |> 
+      mutate(percent = (n/sum(n))*100)
+```
+
+```{r}
+redlining <- data.frame(
+  Grade = c("A", "B", "C", "D"),
+
+  )
 ```
