@@ -47,12 +47,6 @@ la_inequality <- st_join(la_transform, inequality, left = FALSE)
 la_inequality <- st_drop_geometry(la_inequality)
 ```
 
-### Base map of Los Angeles county
-```{r}
-tm_basemap('OpenStreetMap.HOT', alpha = 0.7)+
-  tm_shape(los_angeles)+
-  tm_title("Los Angeles County")
-```
 
 ```{r}
 grade_colors_transparent <- c("A" = "#0855016f", "B" = "#00588b5e", "C" = "#bfb90360", "D" ="#c40017c2")
@@ -71,15 +65,6 @@ tm_compass(position = c('right', 'top'))+
 tm_scalebar()
 ```
 
-ejscreen_redlining_percent <- la_ejs_join |>
-  mutate(
-    grade = ifelse(is.na(grade), "No Grade", grade)) |>
-  count(grade) |>
-  mutate(percent = (n / sum(n)) * 100)
-
-# Render the table
-kable(ejscreen_redlining_percent, digits = 2)
-
 ```{r}
 la_inequality_percent <- la_inequality |> 
   mutate(
@@ -90,7 +75,29 @@ la_inequality_percent <- la_inequality |>
 
 ```{r}
 redlining <- data.frame(
-  Grade = c("A", "B", "C", "D"),
-
-  )
+  Grade = c("A", "B", "C", "D", "No Grade"),
+  Percent = c(7.03, 19.40, 47.87, 21.07, 4.63)
+)
 ```
+
+```{r}
+low_income <- la_inequality |> 
+  summarise(low_income_mean = mean(LOWINCPCT), .by = 'grade')
+
+pm_25 <- la_inequality |> 
+  summarise(mean_pm_25 = mean(PM25), .by = 'grade')
+```
+```{r}
+ggplot(data = low_income, aes(fill = grade)) +
+  geom_col(mapping = aes(x = grade, y = low_income_mean))+
+  labs(x = 'HOLC Grade', y = 'Percent Low Income', title = 'Percent of Low Income Residents by HOLC Grade')+
+  scale_fill_manual(values = grade_colors, name = "Grade")
+
+ggplot(data = pm_25, aes(fill = grade)) +
+  geom_col(mapping = aes(x = grade, y = mean_pm_25))+
+  labs(x = 'HOLC Grade', y = 'PM2.5', title = 'PM2.5 Levels by HOLC Grade')+
+  scale_fill_manual(values = grade_colors, name = "Grade")
+```
+
+---
+
