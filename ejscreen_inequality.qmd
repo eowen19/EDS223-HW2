@@ -104,11 +104,26 @@ Summary paragraph
 - potential relationships between historical redlining, current enivornmental/socioeconimic conditions
 
 
+```{r}
+crashes <- crashes |> filter(!is.na(LATITUDE))
+spatial_crashes <- st_as_sf(crashes, coords = c("LATITUDE", "LONGITUDE"), crs = 4326)
+bike_ped_crashes <- spatial_crashes |> 
+  select(PEDESTRIAN_ACCIDENT, BICYCLE_ACCIDENT, POINT_X, POINT_Y)
+
+if(st_crs(bike_ped_crashes) == st_crs(inequality)){
+  print("it's a match!")
+} else {
+  print("still not a match")
+}
+```
 
 
 ```{r}
-california <- crashes %>%
-  dplyr::filter(ST_ABBREV == "CA")
+
+st_crs(inequality)
+st_crs(spatial_crashes)
+
+
 ```
 ---
 
