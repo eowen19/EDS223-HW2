@@ -99,6 +99,7 @@ redlining <- data.frame(
   Grade = c("A", "B", "C", "D", "No Grade"),
   Percent = c(7.03, 19.40, 47.87, 21.07, 4.63)
 )
+redlining
 ```
 
 ## Create data frames of mean percent of population classified as low income, mean PM2.5 concentration levels, by HOLC grade
