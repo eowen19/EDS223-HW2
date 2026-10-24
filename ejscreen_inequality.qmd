@@ -1,4 +1,20 @@
+---
+title: "EDS223 - Homework Assignment 2"
+subtitle: "Effects of Historical Redlining Across Los Angeles County"
+author: Elyse Owen
+date: 10/24/2026
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+---
+From the map titled 'Los Angeles County by Historical Redlining Neighbourhoods', various geographic trends in where historically redlined zones. There are very few redlined zones towards the northern, and especially northeastern areas, while there more redlined zones to the central and southern areas of the county. Additionally, in only a few instances do Grade A (green) neighbourhoods border Grade D (red) neighbourhoods; typically Grade A neighbourhoods border Grade B (blue) neighbourhoods, while Grade D neighbourhoods border Grade C (yellow) neighbourhoods. Grade A neighbourhoods also appear to typically slightly smaller geographically, while Grade D neighbourhoods appear to have more geographical variance. 
 
+In the chart 'Percent of Low Income Residents by HOLC Grade', it is shown that the lowest percentage of low-income residents are in Grade A, while the highest percentage is within Grade D. From this, the historical legacy of redlined zones by the Home Owners' Loan Corporation (HOLC) becomes more explicit - the neighbourhoods that were considered less desirable for investment and less safe in the 1930s continue to be disadvantage and have higher levels of poverty. 
+This trend continues in the chart 'PM2.5 Levels by HOLC Grade', with Grade A neighbhourhoods having the lowest levels of PM2.5, and Grade D neighbourhoods having the highest levels of PM2.5. However, the variance across the neighbourhood grades is much less significant than what can be seen with the percentage of low income residents; a contributing factor toward this is likely the overall poor air quality within Los Angeles county. 
+
+A change in the trends focusing on Grade A and Grade D occurs when looking at the number of pedestrian accidents by HOLC grade, with Grade C having the highest amount of accidents, followed by Grade B. Grade A still has the lowest amount of pedestrian accidents, however, Grade D has the secondest fewest number of accidents. A similiar trend is reflected when looking at the number of bicycle accidents across the HOLC grades. Without further data, it is not possible to full explain the differences, however, some contributing factors could include the types and sizes of roads within each neighbourhood grade, as well as the accessibility of bike paths and sidewalks. An additonal consideration would be to look at the amount of residents within each neighbourhood grade who are walking or cycling places, as this may also contribute to the variances across the neighbourhoods. 
 
 ## Load libaries sf, tmap, tidyverse, spData
 ```{r}
@@ -105,10 +121,6 @@ ggplot(data = pm_25, aes(fill = grade)) +
   labs(x = 'HOLC Grade', y = 'PM2.5', title = 'PM2.5 Levels by HOLC Grade')+
   scale_fill_manual(values = grade_colors, name = "Grade")
 ```
-
-Summary paragraph
-- patterns in results
-- potential relationships between historical redlining, current enivornmental/socioeconimic conditions
 
 ## Match CRS, join SWITRS data to HOLC data, drop geometry
 ```{r}
