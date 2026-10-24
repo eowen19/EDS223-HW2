@@ -99,5 +99,16 @@ ggplot(data = pm_25, aes(fill = grade)) +
   scale_fill_manual(values = grade_colors, name = "Grade")
 ```
 
+Summary paragraph
+- patterns in results
+- potential relationships between historical redlining, current enivornmental/socioeconimic conditions
+
+
+
+
+```{r}
+california <- crashes %>%
+  dplyr::filter(ST_ABBREV == "CA")
+```
 ---
 
