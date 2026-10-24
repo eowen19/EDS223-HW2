@@ -29,7 +29,7 @@ library(dplyr)
 
 ## Load the data
 ```{r}
-ej_screen <- st_read(here("EDS223-HW2", "data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
+ej_screen <- st_read(here("data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
 
 inequality <- st_read(here("EDS223-HW2","data", "mapping-inequality", "mapping-inequality-los-angeles.json"))
 
