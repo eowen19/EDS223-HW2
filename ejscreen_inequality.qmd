@@ -31,9 +31,9 @@ library(dplyr)
 ```{r}
 ej_screen <- st_read(here("data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
 
-inequality <- st_read(here("EDS223-HW2","data", "mapping-inequality", "mapping-inequality-los-angeles.json"))
+inequality <- st_read(here("data", "mapping-inequality", "mapping-inequality-los-angeles.json"))
 
-crashes <- read_csv('EDS223-HW2/data/SWITRS_LA/Crashes.csv')
+crashes <- read_csv('data/SWITRS_LA/Crashes.csv')
 ```
 
 ## Filter to Los Angeles County
