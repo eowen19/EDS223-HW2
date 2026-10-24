@@ -1,6 +1,6 @@
 
 
-# Load libaries sf, tmap, tidyverse, spData
+## Load libaries sf, tmap, tidyverse, spData
 ```{r}
 library(sf)
 library(tmap)
@@ -11,6 +11,7 @@ library(gt)
 library(dplyr)
 ```
 
+## Load the data
 ```{r}
 ej_screen <- st_read(here("EDS223-HW2", "data", "ejscreen", "EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
 
@@ -19,7 +20,7 @@ inequality <- st_read(here("EDS223-HW2","data", "mapping-inequality", "mapping-i
 crashes <- read_csv('EDS223-HW2/data/SWITRS_LA/Crashes.csv')
 ```
 
-# Filter to Los Angeles County
+## Filter to Los Angeles County
 ```{r}
 california <- ej_screen %>%
   dplyr::filter(ST_ABBREV == "CA")
@@ -28,6 +29,7 @@ los_angeles<- california %>%
   dplyr::filter(CNTY_NAME %in% c("Los Angeles County"))
 ```
 
+## Match the CRS
 ```{r}
 st_crs(los_angeles)
 st_crs(inequality)
@@ -40,6 +42,7 @@ if(st_crs(la_transform) == st_crs(inequality)){
 }
 ```
 
+## Join the dataframes, drop the geometry
 ```{r}
 la_transform <- st_make_valid(la_transform)
 inequality <- st_make_valid(inequality)
@@ -47,7 +50,7 @@ la_inequality <- st_join(la_transform, inequality, left = FALSE)
 la_inequality <- st_drop_geometry(la_inequality)
 ```
 
-
+## Create a colour palette
 ```{r}
 grade_colors_transparent <- c("A" = "#0855016f", "B" = "#00588b5e", "C" = "#bfb90360", "D" ="#c40017c2")
 
@@ -59,12 +62,13 @@ grade_colors<- c("A" = "#76A865", "B" = "#7CB5BD", "C" = "#FFFF00", "D" ="#e30c2
 tm_basemap('OpenStreetMap.HOT', alpha = 0.7)+
     tm_shape(inequality, alpha = 0.7)+
     tm_polygons(fill = 'grade', 
-    fill.scale = tm_scale(values = grade_colors))+
-    tm_title("Los Angeles County by Historical Redlining Neighbours")+
+    fill.scale = tm_scale(values = grade_colors_transparent))+
+    tm_title("Los Angeles County by Historical Redlining Neighbourhoods")+
 tm_compass(position = c('right', 'top'))+
 tm_scalebar()
 ```
 
+## Calculate percentage within each HOLC grade
 ```{r}
 la_inequality_percent <- la_inequality |> 
   mutate(
@@ -73,6 +77,7 @@ la_inequality_percent <- la_inequality |>
       mutate(percent = (n/sum(n))*100)
 ```
 
+## Create table of percentage of population within each HOLC grade
 ```{r}
 redlining <- data.frame(
   Grade = c("A", "B", "C", "D", "No Grade"),
@@ -80,6 +85,7 @@ redlining <- data.frame(
 )
 ```
 
+## Create data frames of mean percent of population classified as low income, mean PM2.5 concentration levels, by HOLC grade
 ```{r}
 low_income <- la_inequality |> 
   summarise(low_income_mean = mean(LOWINCPCT), .by = 'grade')
@@ -87,6 +93,7 @@ low_income <- la_inequality |>
 pm_25 <- la_inequality |> 
   summarise(mean_pm_25 = mean(PM25), .by = 'grade')
 ```
+## Visualise percentage of low income population, mean PM2.5 concentrations by HOLC grade
 ```{r}
 ggplot(data = low_income, aes(fill = grade)) +
   geom_col(mapping = aes(x = grade, y = low_income_mean))+
@@ -103,10 +110,12 @@ Summary paragraph
 - patterns in results
 - potential relationships between historical redlining, current enivornmental/socioeconimic conditions
 
-
+## Match CRS, join SWITRS data to HOLC data, drop geometry
 ```{r}
 crashes <- crashes |> filter(!is.na(LATITUDE))
 spatial_crashes <- st_as_sf(crashes, coords = c("LATITUDE", "LONGITUDE"), crs = 4326)
+st_crs(inequality)
+st_crs(spatial_crashes)
 bike_ped_crashes <- spatial_crashes |> 
   select(PEDESTRIAN_ACCIDENT, BICYCLE_ACCIDENT, POINT_X, POINT_Y)
 
@@ -115,15 +124,21 @@ if(st_crs(bike_ped_crashes) == st_crs(inequality)){
 } else {
   print("still not a match")
 }
+HOLC_bike_peds <- st_join(inequality, bike_ped_crashes)
+HOLC_bike_peds <- st_drop_geometry(HOLC_bike_peds)
 ```
 
-
+## Visualise bicycle, pedestrian accidents by HOLC grade
 ```{r}
+ggplot(data = HOLC_bike_peds, aes(fill = grade)) +
+  geom_col(mapping = aes(x = grade, y = PEDESTRIAN_ACCIDENT))+
+  labs(x = 'HOLC Grade', y = 'Number of Pedestrian Accidents', title = 'Number of Pedistrian Accidents by HOLC Grade')+
+  scale_fill_manual(values = grade_colors, name = "Grade")
 
-st_crs(inequality)
-st_crs(spatial_crashes)
-
-
+ggplot(data = HOLC_bike_peds, aes(fill = grade)) +
+  geom_col(mapping = aes(x = grade, y = BICYCLE_ACCIDENT))+
+  labs(x = 'HOLC Grade', y = 'Number of Bicycle Accidents', title = 'Number of Bicycle Accidents by HOLC Grade')+
+  scale_fill_manual(values = grade_colors, name = "Grade")
 ```
 ---
 
