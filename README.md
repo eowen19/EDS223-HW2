@@ -1,13 +1,17 @@
 # EDS223-HW2: Redlining in Los Angeles
-A repo to house the work and assignment for HW2: Exploring patterns of environmental in EDS 223: Geospatial Analysis and Remote Sensing
+A repo to house the work and assignment for HW2: Effects of Historical Redlining Across Los Angeles County in EDS 223: Geospatial Analysis and Remote Sensing
 
 ## The repo will be organised as such:
     README.md
-    data
-        ejscreen
-        mapping-inequality
-        SWITRS_LA
+    .gitignore
+        data
+            ejscreen
+            mapping-inequality
+            SWITRS_LA
     ejscreen_inequality.qmd
+    ejscreen_inequality.pdf
+    ejscreen_inequality.html
+    ejscreen_inequality_files
     
   
 ### Authors
