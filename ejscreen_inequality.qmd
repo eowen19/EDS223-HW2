@@ -62,7 +62,7 @@ if(st_crs(la_transform) == st_crs(inequality)){
 ```{r}
 la_transform <- st_make_valid(la_transform)
 inequality <- st_make_valid(inequality)
-la_inequality <- st_join(la_transform, inequality, left = FALSE)
+la_inequality <- st_join(la_transform, inequality)
 la_inequality <- st_drop_geometry(la_inequality)
 ```
 
@@ -95,7 +95,8 @@ la_inequality_percent <- la_inequality |>
 
 ## Create table of percentage of population within each HOLC grade
 ```{r}
-redlining <- data.frame(
+redlining <- la_inequality_percent |> 
+  data.frame(
   Grade = c("A", "B", "C", "D", "No Grade"),
   Percent = c(7.03, 19.40, 47.87, 21.07, 4.63)
 )
@@ -108,7 +109,7 @@ low_income <- la_inequality |>
   summarise(low_income_mean = mean(LOWINCPCT), .by = 'grade')
 
 pm_25 <- la_inequality |> 
-  summarise(mean_pm_25 = mean(PM25), .by = 'grade')
+  summarise(mean_pm_25 = mean(P_PM25), .by = 'grade')
 ```
 ## Visualise percentage of low income population, mean PM2.5 concentrations by HOLC grade
 ```{r}
@@ -141,6 +142,7 @@ HOLC_bike_peds <- st_join(inequality, bike_ped_crashes)
 HOLC_bike_peds <- st_drop_geometry(HOLC_bike_peds)
 ```
 
+
 ## Visualise bicycle, pedestrian accidents by HOLC grade
 ```{r}
 ggplot(data = HOLC_bike_peds, aes(fill = grade)) +
@@ -155,3 +157,4 @@ ggplot(data = HOLC_bike_peds, aes(fill = grade)) +
 ```
 ---
 
+Revisions were made to the initial la_inequality and la_transform dataframes. With the current revision, the join is now an inner join, not a left join. Further revisions were made to ensure that the PM2.5 is plotted as a percentage of PM2.5 (P_PM2.5) and that the redlining table uses the la_inequality_percentage dataframe to create the table. 
